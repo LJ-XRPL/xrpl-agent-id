@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Copy, CheckCircle, Terminal, Bot, ArrowRight } from 'lucide-react';
 
-export default function ClawdbotSetup() {
+export default function OpenClawSetup() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copyToClipboard = (text: string, index: number) => {
@@ -37,7 +37,7 @@ export default function ClawdbotSetup() {
 
   return (
     <div className="space-y-6">
-      {/* Why Clawdbot */}
+      {/* Why openClaw */}
       <div className="grid sm:grid-cols-3 gap-3">
         {[
           {
@@ -128,7 +128,7 @@ export default function ClawdbotSetup() {
         </summary>
         <pre className="mt-2 p-3 rounded-lg bg-zinc-950 text-xs text-zinc-400 font-mono overflow-x-auto">
 {`skill/
-├── SKILL.md                  # Agent instructions (auto-loaded by Clawdbot)
+├── SKILL.md                  # Agent instructions (auto-loaded by openClaw)
 ├── scripts/
 │   ├── register.js           # XRPL registration (wallet, faucet, DID)
 │   └── verify.js             # Challenge-response handler

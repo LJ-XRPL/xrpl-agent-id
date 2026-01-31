@@ -1,5 +1,5 @@
 import RegistrationForm from '@/components/RegistrationForm';
-import ClawdbotSetup from '@/components/ClawdbotSetup';
+import OpenClawSetup from '@/components/OpenClawSetup';
 import { Bot, Settings } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -13,7 +13,7 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      {/* Clawdbot — Recommended */}
+      {/* openClaw — Recommended */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-semibold">
@@ -23,14 +23,14 @@ export default function RegisterPage() {
         </div>
         <h2 className="text-xl font-bold flex items-center gap-2">
           <Bot className="w-5 h-5 text-blue-600" />
-          Setup with Clawdbot Skill
+          Setup with openClaw Skill
         </h2>
         <p className="text-sm text-zinc-500">
           Install the <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-xs">xrpl-agent-id</code> skill
-          into your Clawdbot agent. It handles registration, key management, and verification
+          into your openClaw agent. It handles registration, key management, and verification
           challenges automatically — no callback server needed.
         </p>
-        <ClawdbotSetup />
+        <OpenClawSetup />
       </section>
 
       {/* Divider */}

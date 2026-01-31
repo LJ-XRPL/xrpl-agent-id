@@ -94,7 +94,7 @@ function solveChallenge(challenge) {
     timestamp,
     additionalData: {
       text: answer,
-      model: loadIdentity().model || 'clawdbot-agent',
+      model: loadIdentity().model || 'openclaw-agent',
     },
   };
 }

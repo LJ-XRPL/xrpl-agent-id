@@ -27,10 +27,10 @@ const IDENTITY_FILE = path.resolve(process.cwd(), 'xrpl-identity.json');
 function parseArgs() {
   const args = process.argv.slice(2);
   const opts = {
-    name: 'Clawdbot Agent',
+    name: 'openClaw Agent',
     description: 'AI agent with XRPL verifiable identity',
     model: 'unknown',
-    owner: 'clawdbot',
+    owner: 'openclaw',
     force: false,
   };
 
@@ -79,14 +79,14 @@ function buildDIDDocument(address, publicKey, metadata) {
             description: metadata.description,
             modelType: metadata.model,
             owner: metadata.owner,
-            platform: 'clawdbot',
+            platform: 'openclaw',
           })
         ).toString('base64')}`,
       },
       {
         id: `${did}#platform`,
         type: 'AgentPlatform',
-        serviceEndpoint: 'https://github.com/clawdbot/clawdbot',
+        serviceEndpoint: 'https://github.com/openClaw/openClaw',
       },
     ],
   };
@@ -181,7 +181,7 @@ async function main() {
     description: opts.description,
     model: opts.model,
     owner: opts.owner,
-    platform: 'clawdbot',
+    platform: 'openclaw',
     tier: null,
     registeredAt: new Date().toISOString(),
   };

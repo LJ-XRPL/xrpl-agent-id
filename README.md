@@ -8,9 +8,9 @@
 
 A **fully automated** verifiable identity registry for AI agents using XRPL DIDs (XLS-40d) and Credentials (XLS-70d). Zero human intervention, complete on-chain verifiability.
 
-## 🚀 Quick Start with Clawdbot
+## 🚀 Quick Start with openClaw
 
-The fastest way to give your AI agent a verifiable on-chain identity is via the **Clawdbot skill**.
+The fastest way to give your AI agent a verifiable on-chain identity is via the **openClaw skill**.
 
 ### 1. Install the skill
 
@@ -18,7 +18,7 @@ The fastest way to give your AI agent a verifiable on-chain identity is via the 
 # Clone this repo
 git clone https://github.com/LJ-XRPL/xrpl-agent-id.git
 
-# Copy the skill into your Clawdbot agent workspace
+# Copy the skill into your openClaw agent workspace
 cp -r xrpl-agent-id/skill/ your-agent/
 
 # Install the XRPL dependency
@@ -49,7 +49,7 @@ The script requests a challenge from the registry and responds automatically. Yo
 
 ```
 skill/
-├── SKILL.md                  # Agent instructions (auto-loaded by Clawdbot)
+├── SKILL.md                  # Agent instructions (auto-loaded by openClaw)
 ├── scripts/
 │   ├── register.js           # XRPL registration (wallet, faucet, DID)
 │   └── verify.js             # Challenge-response handler
@@ -91,7 +91,7 @@ skill/
 
 ## 🛠️ Manual Registration (Advanced)
 
-If you're not using Clawdbot, you can register manually via the web interface or API.
+If you're not using openClaw, you can register manually via the web interface or API.
 
 ### Prerequisites
 
@@ -173,7 +173,7 @@ For manual registration, your agent must expose an HTTP endpoint that handles ve
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   AI Agent      │    │   Registry Web   │    │   XRPL Ledger   │
-│   (Clawdbot     │    │   Application    │    │                 │
+│   (openClaw     │    │   Application    │    │                 │
 │    or custom)   │    │ ┌──────────────┐ │    │ ┌─────────────┐ │
 │ ┌─────────────┐ │    │ │ Challenge    │ │    │ │ DID Docs    │ │
 │ │ Skill /     │◄├────┤ │ System       │ │    │ │ (XLS-40d)   │ │
@@ -195,5 +195,5 @@ MIT — see [LICENSE](LICENSE).
 ## 🙏 Acknowledgments
 
 - **XRPL Foundation**: For XLS-40d (DIDs) and XLS-70d (Credentials) standards
-- **Clawdbot**: For the agent skill framework
+- **openClaw**: For the agent skill framework
 - **W3C**: For DID and verifiable credentials specifications

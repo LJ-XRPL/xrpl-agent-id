@@ -19,7 +19,7 @@ export function createDIDDocument(
   }
 ): DIDDocument {
   const did = `did:xrpl:testnet:${address}`;
-  const isClawdbot = metadata.platform === 'clawdbot';
+  const isOpenClaw = metadata.platform === 'openclaw';
   return {
     '@context': [
       'https://www.w3.org/ns/did/v1',
@@ -48,7 +48,7 @@ export function createDIDDocument(
             modelType: metadata.modelType,
             capabilities: metadata.capabilities,
             owner: metadata.owner,
-            ...(isClawdbot ? { platform: 'clawdbot' } : {}),
+            ...(isOpenClaw ? { platform: 'openclaw' } : {}),
           })
         ).toString('base64')}`,
       },
@@ -61,12 +61,12 @@ export function createDIDDocument(
             },
           ]
         : []),
-      ...(isClawdbot
+      ...(isOpenClaw
         ? [
             {
               id: `${did}#platform`,
               type: 'AgentPlatform',
-              serviceEndpoint: 'https://github.com/clawdbot/clawdbot',
+              serviceEndpoint: 'https://github.com/openClaw/openClaw',
             },
           ]
         : []),
@@ -112,14 +112,14 @@ export function validateDIDDocument(doc: DIDDocument): {
   return { valid: issues.length === 0, issues };
 }
 
-export function isClawdbotAgent(doc: DIDDocument): boolean {
+export function isOpenClawAgent(doc: DIDDocument): boolean {
   // Check for platform service endpoint
   const platformSvc = doc.service?.find((s) => s.type === 'AgentPlatform');
-  if (platformSvc?.serviceEndpoint?.includes('clawdbot')) return true;
+  if (platformSvc?.serviceEndpoint?.includes('openclaw')) return true;
 
   // Check metadata for platform field
   const meta = extractMetadataFromDID(doc);
-  if (meta && (meta as Record<string, unknown>).platform === 'clawdbot') return true;
+  if (meta && (meta as Record<string, unknown>).platform === 'openclaw') return true;
 
   return false;
 }

@@ -39,7 +39,7 @@ export default function HomePage() {
             href="https://github.com/LJ-XRPL/xrpl-agent-id"
             className="text-blue-600 hover:underline"
           >
-            Clawdbot skill
+            openClaw skill
           </a>{' '}
           and go from zero to verified identity in one command.
         </p>
@@ -61,14 +61,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Start with Clawdbot */}
+      {/* Quick Start with openClaw */}
       <section className="space-y-6 max-w-3xl mx-auto">
         <div className="text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold mb-3">
             <Zap className="w-3.5 h-3.5" />
             QUICKEST PATH
           </div>
-          <h2 className="text-2xl font-bold">Quick Start with Clawdbot</h2>
+          <h2 className="text-2xl font-bold">Quick Start with openClaw</h2>
           <p className="text-zinc-500 mt-2">
             Three commands. Your agent gets a verifiable on-chain identity.
           </p>
@@ -81,7 +81,7 @@ export default function HomePage() {
               step: '1',
               title: 'Install Skill',
               code: 'cp -r skill/ your-agent/',
-              desc: 'Copy the xrpl-agent-id skill into your Clawdbot agent workspace.',
+              desc: 'Copy the xrpl-agent-id skill into your openClaw agent workspace.',
             },
             {
               icon: Zap,
@@ -139,7 +139,7 @@ export default function HomePage() {
             {
               icon: UserPlus,
               title: '1. Register',
-              desc: 'Create an XRPL account, publish a DID document, and install the Clawdbot skill — or expose a callback endpoint manually.',
+              desc: 'Create an XRPL account, publish a DID document, and install the openClaw skill — or expose a callback endpoint manually.',
             },
             {
               icon: Zap,
@@ -225,7 +225,7 @@ export default function HomePage() {
       <section className="text-center py-8 space-y-4 border-t border-zinc-200 dark:border-zinc-800">
         <h2 className="text-xl font-bold">Ready to get started?</h2>
         <p className="text-sm text-zinc-500">
-          Install the Clawdbot skill or register manually — your choice.
+          Install the openClaw skill or register manually — your choice.
         </p>
         <div className="flex items-center justify-center gap-3">
           <Link
