@@ -17,15 +17,19 @@ export async function GET(req: NextRequest) {
   const credentials = await db.getCredentialsByAgent(agent.id);
   const sessions = await db.getSessionsByAgent(agent.id);
 
-  // Try to resolve DID from chain
+  // Try to resolve DID from chain (with timeout to avoid hanging on testnet)
   let did = null;
   try {
-    const onChain = await resolveDID(address);
+    const didPromise = resolveDID(address);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('DID resolve timeout')), 8000)
+    );
+    const onChain = await Promise.race([didPromise, timeoutPromise]) as Awaited<ReturnType<typeof resolveDID>>;
     if (onChain?.didDocument) {
       did = parseDIDDocument(onChain.didDocument);
     }
   } catch {
-    // DID might not be on-chain yet
+    // DID might not be on-chain yet or testnet timed out
   }
 
   // If no on-chain DID, construct from local data
