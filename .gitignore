@@ -57,4 +57,4 @@ logs/
 
 # Testing
 coverage/
-.nyc_output/
+.nyc_output/xrpl-identity.json
