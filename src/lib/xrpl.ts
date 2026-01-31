@@ -105,10 +105,10 @@ export async function submitDIDSet(
 ): Promise<{ success: boolean; hash?: string; error?: string }> {
   const client = await getClient();
   try {
+    // DID document hosted off-chain at URI (on-chain DIDDocument field has 256-byte limit)
     const tx: Record<string, unknown> = {
       TransactionType: 'DIDSet',
       Account: wallet.address,
-      DIDDocument: Buffer.from(didDocument).toString('hex').toUpperCase(),
       URI: Buffer.from(uri).toString('hex').toUpperCase(),
     };
     const prepared = await client.autofill(tx as unknown as SubmittableTransaction);

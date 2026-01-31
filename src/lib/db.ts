@@ -16,7 +16,10 @@ import {
   AgentStatus,
 } from './types';
 
-const DB_DIR = path.join(process.cwd(), 'data');
+// Use /tmp on Vercel (read-only filesystem), local data/ otherwise
+const DB_DIR = process.env.VERCEL
+  ? path.join('/tmp', 'data')
+  : path.join(process.cwd(), 'data');
 const DB_PATH = path.join(DB_DIR, 'db.json');
 
 interface Database {
