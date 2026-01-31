@@ -10,14 +10,14 @@ export async function GET(req: NextRequest) {
   const address = req.nextUrl.searchParams.get('address');
 
   if (address) {
-    const agent = db.getAgent(address);
+    const agent = await db.getAgent(address);
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
     }
     return NextResponse.json({ agent });
   }
 
-  const agents = db.getAllAgents();
+  const agents = await db.getAllAgents();
   return NextResponse.json({ agents });
 }
 
@@ -138,8 +138,8 @@ export async function POST(req: NextRequest) {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        db.createAgent(agent);
-        db.logEvent(agent.id, 'agent_registered', 'info', {
+        await db.createAgent(agent);
+        await db.logEvent(agent.id, 'agent_registered', 'info', {
           address: walletData.address,
           did,
         });

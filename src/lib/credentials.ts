@@ -90,8 +90,8 @@ export async function issueCredential(
     metadata: JSON.stringify(metadata),
   };
 
-  db.createCredential(credential);
-  db.logEvent(agentId, 'credential_issued', 'info', {
+  await db.createCredential(credential);
+  await db.logEvent(agentId, 'credential_issued', 'info', {
     credentialId: credential.id,
     type: credentialType,
     txHash,
@@ -108,13 +108,13 @@ export async function revokeCredential(
   credentialId: string,
   reason: string
 ): Promise<boolean> {
-  const credential = db.getCredential(credentialId);
+  const credential = await db.getCredential(credentialId);
   if (!credential || credential.status === 'revoked') return false;
 
   // Attempt on-chain revocation
   try {
     const issuerWallet = getIssuerWallet();
-    const agent = db.getAgent(credential.agentId);
+    const agent = await db.getAgent(credential.agentId);
     if (agent) {
       await submitCredentialDelete(
         issuerWallet,
@@ -126,8 +126,8 @@ export async function revokeCredential(
     console.warn('On-chain revocation failed:', e);
   }
 
-  db.updateCredentialStatus(credentialId, 'revoked');
-  db.logEvent(credential.agentId, 'credential_revoked', 'warning', {
+  await db.updateCredentialStatus(credentialId, 'revoked');
+  await db.logEvent(credential.agentId, 'credential_revoked', 'warning', {
     credentialId,
     type: credential.type,
     reason,
@@ -140,8 +140,8 @@ export async function revokeCredential(
 // Query helpers
 // ============================================================
 
-export function getHighestTier(agentId: string): VerificationTier | null {
-  const creds = db.getActiveCredentialsByAgent(agentId);
+export async function getHighestTier(agentId: string): Promise<VerificationTier | null> {
+  const creds = await db.getActiveCredentialsByAgent(agentId);
   if (creds.length === 0) return null;
 
   const priority: Record<string, number> = {

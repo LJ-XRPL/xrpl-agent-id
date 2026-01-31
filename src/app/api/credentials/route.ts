@@ -12,21 +12,21 @@ export async function GET(req: NextRequest) {
   const address = req.nextUrl.searchParams.get('address');
 
   if (agentId) {
-    const credentials = db.getCredentialsByAgent(agentId);
+    const credentials = await db.getCredentialsByAgent(agentId);
     return NextResponse.json({ credentials });
   }
 
   if (address) {
-    const agent = db.getAgent(address);
+    const agent = await db.getAgent(address);
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
     }
-    const credentials = db.getCredentialsByAgent(agent.id);
-    const highestTier = getHighestTier(agent.id);
+    const credentials = await db.getCredentialsByAgent(agent.id);
+    const highestTier = await getHighestTier(agent.id);
     return NextResponse.json({ credentials, highestTier });
   }
 
-  const credentials = db.getAllCredentials();
+  const credentials = await db.getAllCredentials();
   return NextResponse.json({ credentials });
 }
 
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
-      const agent = db.getAgent(agentId);
+      const agent = await db.getAgent(agentId);
       if (!agent) {
         return NextResponse.json(
           { error: 'Agent not found' },

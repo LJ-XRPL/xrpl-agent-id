@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       if (!address) {
         return NextResponse.json({ error: 'Address required' }, { status: 400 });
       }
-      const challenge = generateChallenge(address, type);
+      const challenge = await generateChallenge(address, type);
       return NextResponse.json({
         challenge: {
           id: challenge.id,
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
-      const challenge = db.getChallenge(challengeId);
+      const challenge = await db.getChallenge(challengeId);
       if (!challenge) {
         return NextResponse.json(
           { error: 'Challenge not found' },
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
           );
       }
 
-      db.updateChallenge(challengeId, {
+      await db.updateChallenge(challengeId, {
         status: 'completed',
         responseData: JSON.stringify(response),
         responseTimeMs,
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
       if (!address) {
         return NextResponse.json({ error: 'Address required' }, { status: 400 });
       }
-      const agent = db.getAgent(address);
+      const agent = await db.getAgent(address);
       if (!agent) {
         return NextResponse.json(
           { error: 'Agent not found' },

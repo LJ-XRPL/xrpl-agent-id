@@ -56,11 +56,11 @@ const PATTERN_TESTS = [
 // Challenge generation
 // ============================================================
 
-export function generateChallenge(
+export async function generateChallenge(
   agentAddress: string,
   challengeType: ChallengeType,
   extraData?: Record<string, unknown>
-): Challenge {
+): Promise<Challenge> {
   const nonce = crypto.randomBytes(32).toString('hex');
   const timestamp = Date.now();
 
@@ -126,7 +126,7 @@ export function generateChallenge(
     responseTimeMs: null,
   };
 
-  db.createChallenge(challenge);
+  await db.createChallenge(challenge);
   return challenge;
 }
 
@@ -179,7 +179,7 @@ export async function sendChallenge(
     }
 
     const response = await resp.json();
-    db.updateChallenge(challenge.id, {
+    await db.updateChallenge(challenge.id, {
       status: 'completed',
       responseData: JSON.stringify(response),
       responseTimeMs,
@@ -321,7 +321,7 @@ export async function runChallengeBattery(
 
   // 1. Callback echo test
   try {
-    const ch = generateChallenge(agentAddress, 'callback');
+    const ch = await generateChallenge(agentAddress, 'callback');
     const res = await sendChallenge(ch, callbackUrl);
     if (res.success && res.response) {
       results.push(verifyCallbackResponse(ch, res.response));
@@ -348,7 +348,7 @@ export async function runChallengeBattery(
   // 2. Behavioral tests (3 rounds)
   for (let i = 0; i < 3; i++) {
     try {
-      const ch = generateChallenge(agentAddress, 'behavioral', { round: i });
+      const ch = await generateChallenge(agentAddress, 'behavioral', { round: i });
       const res = await sendChallenge(ch, callbackUrl);
       if (res.success && res.response) {
         results.push(
@@ -378,7 +378,7 @@ export async function runChallengeBattery(
 
   // 3. Latency test
   try {
-    const ch = generateChallenge(agentAddress, 'latency');
+    const ch = await generateChallenge(agentAddress, 'latency');
     const res = await sendChallenge(ch, callbackUrl);
     if (res.success && res.response) {
       results.push(verifyLatencyResponse(ch, res.response, res.responseTimeMs));
@@ -389,7 +389,7 @@ export async function runChallengeBattery(
 
   // 4. Pattern test
   try {
-    const ch = generateChallenge(agentAddress, 'pattern');
+    const ch = await generateChallenge(agentAddress, 'pattern');
     const res = await sendChallenge(ch, callbackUrl);
     if (res.success && res.response) {
       results.push(

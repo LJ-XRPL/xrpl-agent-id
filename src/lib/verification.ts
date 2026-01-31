@@ -41,7 +41,7 @@ export async function runVerification(
   targetTier: VerificationTier,
   teeAttestation?: TEEAttestation
 ): Promise<VerificationSession> {
-  const agent = db.getAgent(agentId);
+  const agent = await db.getAgent(agentId);
   if (!agent) throw new Error('Agent not found');
 
   const sessionId = crypto.randomUUID();
@@ -56,7 +56,7 @@ export async function runVerification(
     startedAt: new Date().toISOString(),
     completedAt: null,
   };
-  db.createSession(session);
+  await db.createSession(session);
 
   const results: VerificationResult[] = [];
 
@@ -90,7 +90,7 @@ export async function runVerification(
             .createHash('sha256')
             .update(teeAttestation.attestationReport)
             .digest('hex');
-          db.updateAgent(agentId, { environmentalFingerprint: envFingerprint });
+          await db.updateAgent(agentId, { environmentalFingerprint: envFingerprint });
         }
       }
     }
@@ -101,7 +101,7 @@ export async function runVerification(
       targetTier === VerificationTier.AUDITED
     ) {
       const fingerprint = buildBehavioralFingerprint(results);
-      db.saveBehavioralBaseline(agentId, JSON.stringify(fingerprint));
+      await db.saveBehavioralBaseline(agentId, JSON.stringify(fingerprint));
 
       results.push({
         type: 'behavioral',
@@ -149,7 +149,7 @@ export async function runVerification(
 
     // Update agent & issue credential
     if (achievedTier) {
-      db.updateAgent(agentId, { status: 'verified', tier: achievedTier });
+      await db.updateAgent(agentId, { status: 'verified', tier: achievedTier });
       try {
         await issueCredential(agentId, agent.xrplAddress, achievedTier, results);
       } catch (e) {
@@ -166,8 +166,8 @@ export async function runVerification(
       completedAt: new Date().toISOString(),
     };
 
-    db.updateSession(sessionId, finalSession);
-    db.logEvent(agentId, 'verification_complete', achievedTier ? 'info' : 'warning', {
+    await db.updateSession(sessionId, finalSession);
+    await db.logEvent(agentId, 'verification_complete', achievedTier ? 'info' : 'warning', {
       tier: achievedTier,
       score: overallScore,
       passed: achievedTier !== null,
@@ -181,8 +181,8 @@ export async function runVerification(
       status: 'failed',
       completedAt: new Date().toISOString(),
     };
-    db.updateSession(sessionId, failedSession);
-    db.logEvent(agentId, 'verification_error', 'critical', {
+    await db.updateSession(sessionId, failedSession);
+    await db.logEvent(agentId, 'verification_error', 'critical', {
       error: (error as Error).message,
     });
     return failedSession;
@@ -198,14 +198,14 @@ export async function reverifyAgent(agentId: string): Promise<{
   driftDetected: boolean;
   results: VerificationResult[];
 }> {
-  const agent = db.getAgent(agentId);
+  const agent = await db.getAgent(agentId);
   if (!agent) throw new Error('Agent not found');
 
   const results = await runChallengeBattery(agent.xrplAddress, agent.callbackUrl);
   const newFingerprint = buildBehavioralFingerprint(results);
 
   let driftDetected = false;
-  const baselineStr = db.getBehavioralBaseline(agentId);
+  const baselineStr = await db.getBehavioralBaseline(agentId);
   if (baselineStr) {
     const previous = JSON.parse(baselineStr);
     driftDetected = detectBehavioralDrift(previous, newFingerprint);
@@ -214,10 +214,10 @@ export async function reverifyAgent(agentId: string): Promise<{
   const passed = !driftDetected && results.some((r) => r.passed);
 
   if (passed) {
-    db.saveBehavioralBaseline(agentId, JSON.stringify(newFingerprint));
+    await db.saveBehavioralBaseline(agentId, JSON.stringify(newFingerprint));
   }
 
-  db.logEvent(
+  await db.logEvent(
     agentId,
     driftDetected ? 'behavioral_drift' : 'reverification',
     driftDetected ? 'warning' : 'info',

@@ -9,13 +9,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Address required' }, { status: 400 });
   }
 
-  const agent = db.getAgent(address);
+  const agent = await db.getAgent(address);
   if (!agent) {
     return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
   }
 
-  const credentials = db.getCredentialsByAgent(agent.id);
-  const sessions = db.getSessionsByAgent(agent.id);
+  const credentials = await db.getCredentialsByAgent(agent.id);
+  const sessions = await db.getSessionsByAgent(agent.id);
 
   // Try to resolve DID from chain
   let did = null;
