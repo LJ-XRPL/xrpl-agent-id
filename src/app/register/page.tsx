@@ -1,23 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import RegistrationForm from '@/components/RegistrationForm';
 import {
-  Bot,
-  Settings,
   Copy,
   CheckCircle,
   Terminal,
-  Zap,
   Shield,
   Fingerprint,
   ArrowRight,
 } from 'lucide-react';
 
-type Tab = 'openclaw' | 'manual';
-
 export default function RegisterPage() {
-  const [tab, setTab] = useState<Tab>('openclaw');
   const [copied, setCopied] = useState(false);
 
   const curlCommand = 'curl -s https://xrpl-agent-id.vercel.app/skill.md';
@@ -38,39 +31,9 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      {/* Tab Switcher */}
+      {/* Registration Content */}
       <div className="border border-emerald-800/40 rounded-2xl overflow-hidden bg-zinc-900/50">
-        <div className="flex border-b border-zinc-800">
-          <button
-            onClick={() => setTab('openclaw')}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-semibold transition-colors ${
-              tab === 'openclaw'
-                ? 'bg-emerald-900/20 text-emerald-400 border-b-2 border-emerald-500'
-                : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
-            }`}
-          >
-            <Zap className="w-4 h-4" />
-            openClaw
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-900/40 text-emerald-400 uppercase tracking-wider">
-              recommended
-            </span>
-          </button>
-          <button
-            onClick={() => setTab('manual')}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-semibold transition-colors ${
-              tab === 'manual'
-                ? 'bg-zinc-800/50 text-zinc-200 border-b-2 border-zinc-500'
-                : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-            Manual
-          </button>
-        </div>
-
-        {/* openClaw Tab */}
-        {tab === 'openclaw' && (
-          <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6">
             <div>
               <h3 className="text-xl font-bold text-emerald-400 mb-2">
                 Zero-config identity in one command
@@ -183,35 +146,21 @@ export default function RegisterPage() {
     └── verification-tiers.md # 3-tier system docs`}
               </pre>
             </details>
-          </div>
-        )}
 
-        {/* Manual Tab */}
-        {tab === 'manual' && (
-          <div className="p-6 space-y-6">
-            <div>
-              <h3 className="text-xl font-bold text-zinc-200 mb-2">Manual Registration</h3>
-              <p className="text-sm text-zinc-400">
-                Register manually by providing agent details and a callback URL.
-                Your agent must expose an HTTP endpoint that responds to verification challenges.
+            {/* Manual Registration Note */}
+            <div className="border-t border-zinc-700/50 pt-4">
+              <p className="text-xs text-zinc-500 text-center">
+                Need to register manually? Use the{' '}
+                <a 
+                  href="/api/agents" 
+                  className="text-emerald-400 hover:text-emerald-300 underline"
+                >
+                  API directly
+                </a>{' '}
+                with a POST request.
               </p>
             </div>
-
-            <div className="border border-zinc-700/50 bg-zinc-800/30 rounded-xl p-4 text-sm">
-              <strong className="text-zinc-200">Registration Flow:</strong>
-              <ol className="mt-2 space-y-1 text-zinc-400 list-decimal list-inside">
-                <li>Fill in agent details and capabilities</li>
-                <li>Configure callback endpoint URL for challenge-response</li>
-                <li>System generates XRPL keypair and funds via testnet faucet</li>
-                <li>DID document is published on-chain (XLS-40d)</li>
-                <li>Automated verification tests run against your callback</li>
-                <li>Verifiable Credential issued on-chain (XLS-70d) if tests pass</li>
-              </ol>
-            </div>
-
-            <RegistrationForm />
           </div>
-        )}
       </div>
     </div>
   );
