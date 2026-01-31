@@ -108,46 +108,25 @@ async function main() {
     process.exit(0);
   }
 
-  console.log('🔑 Generating XRPL keypair...');
-  const wallet = Wallet.generate();
+  const client = new Client(XRPL_SERVER);
+  await client.connect();
+
+  console.log('🔑 Generating XRPL keypair & funding via testnet faucet...');
+  const { wallet, balance } = await client.fundWallet();
   console.log(`   Address: ${wallet.address}`);
-
-  console.log('💰 Funding account via testnet faucet...');
-  try {
-    const resp = await fetch(FAUCET_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ destination: wallet.address }),
-    });
-    if (!resp.ok) {
-      console.error('   ⚠️  Faucet returned non-OK status, continuing anyway...');
-    } else {
-      const data = await resp.json();
-      console.log(`   Funded: ${data.balance || 'unknown'} XRP`);
-    }
-  } catch (e) {
-    console.error(`   ⚠️  Faucet error: ${e.message}`);
-    console.log('   Continuing — account may need manual funding.');
-  }
-
-  // Wait for ledger propagation
-  console.log('⏳ Waiting for ledger propagation...');
-  await new Promise((r) => setTimeout(r, 3000));
+  console.log(`   Funded: ${balance} XRP`);
 
   console.log('📝 Publishing DID document on-chain...');
   const didDocument = buildDIDDocument(wallet.address, wallet.publicKey, opts);
   const did = `did:xrpl:testnet:${wallet.address}`;
 
   let didTxHash = null;
-  const client = new Client(XRPL_SERVER);
 
   try {
-    await client.connect();
-
+    // DID document is hosted off-chain at the URI (on-chain DIDDocument field has 256-byte limit)
     const tx = {
       TransactionType: 'DIDSet',
       Account: wallet.address,
-      DIDDocument: Buffer.from(JSON.stringify(didDocument)).toString('hex').toUpperCase(),
       URI: Buffer.from(`https://xrpl-agent-id.vercel.app/agent/${wallet.address}`).toString('hex').toUpperCase(),
     };
 
