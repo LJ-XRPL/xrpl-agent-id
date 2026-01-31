@@ -1,245 +1,366 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   Shield,
-  Zap,
-  Eye,
-  ArrowRight,
-  UserPlus,
-  Database,
-  Search,
-  Lock,
-  Cpu,
-  Globe,
   Bot,
-  Terminal,
+  User,
+  Copy,
   CheckCircle,
+  ArrowRight,
+  Terminal,
+  Zap,
+  Search,
+  Database,
+  ExternalLink,
+  Fingerprint,
+  Lock,
+  Globe,
 } from 'lucide-react';
-import TierExplainer from '@/components/TierExplainer';
+
+type View = 'hero' | 'agent' | 'human';
+type AgentTab = 'openclaw' | 'manual';
 
 export default function HomePage() {
-  return (
-    <div className="space-y-16">
-      {/* Hero */}
-      <section className="text-center py-12 space-y-6">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-sm font-medium">
-          <Globe className="w-4 h-4" />
-          Built on XRPL Testnet — XLS-40d & XLS-70d
-        </div>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
-          Verifiable Identity
-          <br />
-          <span className="text-blue-600 dark:text-blue-500">
-            for AI Agents
-          </span>
-        </h1>
-        <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-          An open-source registry where AI agents receive on-chain verifiable credentials
-          through fully automated verification. Install the{' '}
-          <a
-            href="https://github.com/LJ-XRPL/xrpl-agent-id"
-            className="text-blue-600 hover:underline"
-          >
-            openClaw skill
-          </a>{' '}
-          and go from zero to verified identity in one command.
-        </p>
-        <div className="flex items-center justify-center gap-3">
-          <Link
-            href="/register"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium"
-          >
-            <Bot className="w-5 h-5" />
-            Get Started
-          </Link>
-          <Link
-            href="/verify"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-zinc-300 dark:border-zinc-700 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900 font-medium"
-          >
-            <Search className="w-5 h-5" />
-            Verify Agent
-          </Link>
-        </div>
-      </section>
+  const [view, setView] = useState<View>('hero');
+  const [agentTab, setAgentTab] = useState<AgentTab>('openclaw');
+  const [copied, setCopied] = useState(false);
 
-      {/* Quick Start with openClaw */}
-      <section className="space-y-6 max-w-3xl mx-auto">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold mb-3">
-            <Zap className="w-3.5 h-3.5" />
-            QUICKEST PATH
-          </div>
-          <h2 className="text-2xl font-bold">Quick Start with openClaw</h2>
-          <p className="text-zinc-500 mt-2">
-            Three commands. Your agent gets a verifiable on-chain identity.
+  const curlCommand = 'curl -s https://xrpl-agent-id.vercel.app/skill.md';
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="min-h-[80vh] flex flex-col">
+      {/* Hero Section */}
+      <section className="flex-1 flex flex-col items-center justify-center py-16 sm:py-24 space-y-8 text-center">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-900/20 border border-emerald-800/30 text-emerald-400 text-sm font-medium">
+          <Shield className="w-4 h-4" />
+          On-Chain Identity — XRPL Testnet
+        </div>
+
+        {/* Title */}
+        <div className="space-y-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+            XRPL Agent Identity
+            <br />
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              Registry
+            </span>
+          </h1>
+          <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            Verifiable on-chain identity for AI agents. Register, verify, and prove who your agent
+            is — powered by XRPL DIDs and Verifiable Credentials.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
-          {[
-            {
-              icon: Terminal,
-              step: '1',
-              title: 'Install Skill',
-              code: 'cp -r skill/ your-agent/',
-              desc: 'Copy the xrpl-agent-id skill into your openClaw agent workspace.',
-            },
-            {
-              icon: Zap,
-              step: '2',
-              title: 'Register',
-              code: 'node skill/scripts/register.js',
-              desc: 'Generates wallet, funds via faucet, publishes DID on-chain.',
-            },
-            {
-              icon: CheckCircle,
-              step: '3',
-              title: 'Verified',
-              code: 'node skill/scripts/verify.js --submit <url>',
-              desc: 'Responds to challenges automatically. Agent is verified.',
-            },
-          ].map((item) => (
-            <div
-              key={item.step}
-              className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden"
-            >
-              <div className="p-5 space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <item.icon className="w-5 h-5 text-blue-600" />
+        {/* Two big buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+          <button
+            onClick={() => setView('agent')}
+            className={`group relative flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 ${
+              view === 'agent'
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 scale-105'
+                : 'bg-emerald-900/20 text-emerald-400 border border-emerald-800/40 hover:bg-emerald-900/30 hover:border-emerald-700/50 hover:scale-[1.02]'
+            }`}
+          >
+            <Bot className="w-6 h-6" />
+            I&apos;m an Agent
+          </button>
+
+          <button
+            onClick={() => setView('human')}
+            className={`group relative flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200 ${
+              view === 'human'
+                ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/25 scale-105'
+                : 'bg-rose-900/20 text-rose-400 border border-rose-800/40 hover:bg-rose-900/30 hover:border-rose-700/50 hover:scale-[1.02]'
+            }`}
+          >
+            <User className="w-6 h-6" />
+            I&apos;m a Human
+          </button>
+        </div>
+      </section>
+
+      {/* Agent View */}
+      {view === 'agent' && (
+        <section className="max-w-3xl mx-auto w-full pb-16 space-y-8 animate-fade-in">
+          {/* Tab Card */}
+          <div className="border border-emerald-800/40 rounded-2xl overflow-hidden bg-zinc-900/50">
+            {/* Tabs */}
+            <div className="flex border-b border-zinc-800">
+              <button
+                onClick={() => setAgentTab('openclaw')}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-semibold transition-colors ${
+                  agentTab === 'openclaw'
+                    ? 'bg-emerald-900/20 text-emerald-400 border-b-2 border-emerald-500'
+                    : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
+                }`}
+              >
+                <Zap className="w-4 h-4" />
+                openClaw
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-900/40 text-emerald-400 uppercase tracking-wider">
+                  recommended
+                </span>
+              </button>
+              <button
+                onClick={() => setAgentTab('manual')}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-semibold transition-colors ${
+                  agentTab === 'manual'
+                    ? 'bg-zinc-800/50 text-zinc-200 border-b-2 border-zinc-500'
+                    : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50'
+                }`}
+              >
+                <Terminal className="w-4 h-4" />
+                Manual
+              </button>
+            </div>
+
+            {/* openClaw Tab Content */}
+            {agentTab === 'openclaw' && (
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold text-emerald-400 mb-2">
+                    Zero-config identity in one command
+                  </h3>
+                  <p className="text-sm text-zinc-400">
+                    Pipe this into your openClaw agent. It fetches the skill, registers on XRPL,
+                    and gets verified — fully automated.
+                  </p>
                 </div>
-                <h3 className="font-bold">
-                  <span className="text-blue-600">{item.step}.</span>{' '}
+
+                {/* Command Block */}
+                <div className="group relative rounded-xl overflow-hidden border border-zinc-700/50">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-zinc-800/80 border-b border-zinc-700/50">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-zinc-600" />
+                      <div className="w-3 h-3 rounded-full bg-zinc-600" />
+                      <div className="w-3 h-3 rounded-full bg-zinc-600" />
+                    </div>
+                    <span className="text-xs text-zinc-500 ml-2">terminal</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-4 bg-zinc-950">
+                    <span className="text-emerald-500 select-none">$</span>
+                    <code className="text-sm text-emerald-300 font-mono flex-1 select-all">
+                      {curlCommand}
+                    </code>
+                    <button
+                      onClick={() => copyToClipboard(curlCommand)}
+                      className="flex-shrink-0 p-2 rounded-lg hover:bg-zinc-800 transition-colors"
+                      title="Copy to clipboard"
+                    >
+                      {copied ? (
+                        <CheckCircle className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-zinc-500 hover:text-zinc-300" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Steps */}
+                <div className="space-y-4">
+                  {[
+                    {
+                      num: '1',
+                      title: 'Run the command above',
+                      desc: 'Fetches the XRPL identity skill with registration and verification scripts.',
+                      icon: Terminal,
+                    },
+                    {
+                      num: '2',
+                      title: 'Agent auto-registers on XRPL',
+                      desc: 'Generates a wallet, funds via testnet faucet, publishes DID on-chain. Zero manual steps.',
+                      icon: Fingerprint,
+                    },
+                    {
+                      num: '3',
+                      title: 'Verified on-chain identity',
+                      desc: 'Passes verification challenges automatically. You get a Verifiable Credential on XRPL.',
+                      icon: Shield,
+                    },
+                  ].map((step) => (
+                    <div key={step.num} className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-full bg-emerald-900/30 border border-emerald-800/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-sm font-bold text-emerald-400">{step.num}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-zinc-200">{step.title}</h4>
+                        <p className="text-sm text-zinc-500">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Result */}
+                <div className="rounded-xl bg-emerald-950/30 border border-emerald-800/30 p-4 space-y-2">
+                  <h4 className="text-sm font-semibold text-emerald-400 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    After setup, your agent has:
+                  </h4>
+                  <ul className="text-xs text-emerald-300/70 space-y-1 list-disc list-inside">
+                    <li>An XRPL account with testnet XRP</li>
+                    <li>A W3C-compliant DID published on-chain (XLS-40d)</li>
+                    <li>A Verifiable Credential anyone can check (XLS-70d)</li>
+                    <li>
+                      A shareable DID:{' '}
+                      <code className="px-1 py-0.5 rounded bg-emerald-900/40">
+                        did:xrpl:testnet:&lt;address&gt;
+                      </code>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Manual Tab Content */}
+            {agentTab === 'manual' && (
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold text-zinc-200 mb-2">Manual HTTP Callback Setup</h3>
+                  <p className="text-sm text-zinc-400">
+                    For agents that prefer direct API integration. You&apos;ll set up a callback
+                    endpoint and register via the web form.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    {
+                      num: '1',
+                      title: 'Set up your callback endpoint',
+                      desc: 'Expose an HTTP endpoint that can respond to JSON verification challenges (callback, behavioral, latency).',
+                      icon: Globe,
+                    },
+                    {
+                      num: '2',
+                      title: 'Register via the web form',
+                      desc: 'Fill in your agent details, capabilities, and callback URL. The system generates your XRPL keypair.',
+                      icon: Database,
+                    },
+                    {
+                      num: '3',
+                      title: 'Pass verification challenges',
+                      desc: 'Automated tests hit your callback. Pass them all and receive your on-chain Verifiable Credential.',
+                      icon: Lock,
+                    },
+                  ].map((step) => (
+                    <div key={step.num} className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-sm font-bold text-zinc-400">{step.num}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-zinc-200">{step.title}</h4>
+                        <p className="text-sm text-zinc-500">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  href="/register"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-sm font-medium transition-colors"
+                >
+                  Go to Registration Form
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Human View */}
+      {view === 'human' && (
+        <section className="max-w-3xl mx-auto w-full pb-16 space-y-6 animate-fade-in">
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-2xl font-bold">Explore the Agent Directory</h2>
+            <p className="text-zinc-400">
+              Browse verified agents, check credentials, and verify agent identities.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              {
+                href: '/directory',
+                icon: Database,
+                title: 'Agent Directory',
+                desc: 'Browse all registered agents and their verification status.',
+                color: 'rose',
+              },
+              {
+                href: '/verify',
+                icon: Search,
+                title: 'Verify an Agent',
+                desc: 'Check if an agent has valid on-chain credentials.',
+                color: 'rose',
+              },
+              {
+                href: '/monitor',
+                icon: Shield,
+                title: 'Live Monitor',
+                desc: 'Real-time verification activity and registry stats.',
+                color: 'rose',
+              },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group border border-rose-800/30 bg-rose-950/10 rounded-2xl p-5 space-y-3 hover:border-rose-700/50 hover:bg-rose-950/20 transition-all"
+              >
+                <div className="w-10 h-10 rounded-xl bg-rose-900/30 flex items-center justify-center">
+                  <item.icon className="w-5 h-5 text-rose-400" />
+                </div>
+                <h3 className="font-bold text-zinc-200 group-hover:text-rose-300 transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-xs text-zinc-500">{item.desc}</p>
-              </div>
-              <div className="px-4 py-2 bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800">
-                <code className="text-xs text-green-400 font-mono">
-                  $ {item.code}
-                </code>
-              </div>
-            </div>
-          ))}
-        </div>
+                <p className="text-sm text-zinc-500">{item.desc}</p>
+                <span className="inline-flex items-center gap-1 text-xs text-rose-400 font-medium">
+                  Open <ArrowRight className="w-3 h-3" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-        <div className="text-center">
-          <Link
-            href="/register"
-            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline font-medium"
-          >
-            Full setup guide <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="space-y-8">
-        <h2 className="text-2xl font-bold text-center">How It Works</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            {
-              icon: UserPlus,
-              title: '1. Register',
-              desc: 'Create an XRPL account, publish a DID document, and install the openClaw skill — or expose a callback endpoint manually.',
-            },
-            {
-              icon: Zap,
-              title: '2. Verify',
-              desc: 'Automated test battery checks your agent: callback challenges, behavioral tests, latency profiling.',
-            },
-            {
-              icon: Shield,
-              title: '3. Credential',
-              desc: 'Pass verification and receive an on-chain Verifiable Credential anyone can check.',
-            },
-          ].map((step) => (
-            <div
-              key={step.title}
-              className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 text-center space-y-3"
+      {/* Bottom Section */}
+      <section className="border-t border-zinc-800/50 py-12 mt-auto">
+        <div className="max-w-3xl mx-auto text-center space-y-6">
+          <div className="space-y-2">
+            <p className="text-zinc-500 text-sm">Don&apos;t have an AI agent?</p>
+            <a
+              href="https://openclaw.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
             >
-              <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mx-auto">
-                <step.icon className="w-6 h-6 text-blue-600" />
-              </div>
-              <h3 className="font-bold text-lg">{step.title}</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {step.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+              Create one at openclaw.ai
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
 
-      {/* Tier system */}
-      <section className="space-y-8">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold">3-Tier Verification System</h2>
-          <p className="text-zinc-500 mt-2">
-            Fully automated — no manual review at any tier
-          </p>
-        </div>
-        <TierExplainer />
-      </section>
-
-      {/* Trust model */}
-      <section className="space-y-6 max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold text-center">Trust Model</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            {
-              icon: Lock,
-              title: 'XRPL DIDs (XLS-40d)',
-              desc: 'Each agent has a W3C-compliant DID published on the XRP Ledger, anchoring identity to a decentralized ledger.',
-            },
-            {
-              icon: Shield,
-              title: 'Verifiable Credentials (XLS-70d)',
-              desc: 'Credentials issued on-chain by a trusted issuer. Anyone can verify without contacting the issuer.',
-            },
-            {
-              icon: Cpu,
-              title: 'TEE Attestation',
-              desc: 'Tier 2+ agents prove what code they run via hardware-signed attestation (SGX, Nitro, TrustZone).',
-            },
-            {
-              icon: Eye,
-              title: 'Behavioral Monitoring',
-              desc: 'Ongoing drift detection ensures agents behave consistently. Credentials auto-revoke on anomalies.',
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 space-y-2"
+          <div className="flex items-center justify-center gap-4 text-xs text-zinc-600">
+            <span>Open Source (MIT)</span>
+            <span>·</span>
+            <span>XRPL Testnet</span>
+            <span>·</span>
+            <a
+              href="https://github.com/LJ-XRPL/xrpl-agent-id"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-400 transition-colors"
             >
-              <div className="flex items-center gap-2">
-                <item.icon className="w-5 h-5 text-blue-600" />
-                <h3 className="font-semibold">{item.title}</h3>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="text-center py-8 space-y-4 border-t border-zinc-200 dark:border-zinc-800">
-        <h2 className="text-xl font-bold">Ready to get started?</h2>
-        <p className="text-sm text-zinc-500">
-          Install the openClaw skill or register manually — your choice.
-        </p>
-        <div className="flex items-center justify-center gap-3">
-          <Link
-            href="/register"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-          >
-            Register Your Agent <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/directory"
-            className="inline-flex items-center gap-2 px-5 py-2.5 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-900 text-sm font-medium"
-          >
-            <Database className="w-4 h-4" /> Browse Directory
-          </Link>
+              GitHub
+            </a>
+          </div>
         </div>
       </section>
     </div>
