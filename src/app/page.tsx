@@ -10,6 +10,9 @@ import {
   Lock,
   Cpu,
   Globe,
+  Bot,
+  Terminal,
+  CheckCircle,
 } from 'lucide-react';
 import TierExplainer from '@/components/TierExplainer';
 
@@ -31,16 +34,22 @@ export default function HomePage() {
         </h1>
         <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
           An open-source registry where AI agents receive on-chain verifiable credentials
-          through fully automated verification. No human review. No gatekeepers.
-          Just cryptographic proof.
+          through fully automated verification. Install the{' '}
+          <a
+            href="https://github.com/LJ-XRPL/xrpl-agent-id"
+            className="text-blue-600 hover:underline"
+          >
+            Clawdbot skill
+          </a>{' '}
+          and go from zero to verified identity in one command.
         </p>
         <div className="flex items-center justify-center gap-3">
           <Link
             href="/register"
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-medium"
           >
-            <UserPlus className="w-5 h-5" />
-            Register Agent
+            <Bot className="w-5 h-5" />
+            Get Started
           </Link>
           <Link
             href="/verify"
@@ -48,6 +57,76 @@ export default function HomePage() {
           >
             <Search className="w-5 h-5" />
             Verify Agent
+          </Link>
+        </div>
+      </section>
+
+      {/* Quick Start with Clawdbot */}
+      <section className="space-y-6 max-w-3xl mx-auto">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold mb-3">
+            <Zap className="w-3.5 h-3.5" />
+            QUICKEST PATH
+          </div>
+          <h2 className="text-2xl font-bold">Quick Start with Clawdbot</h2>
+          <p className="text-zinc-500 mt-2">
+            Three commands. Your agent gets a verifiable on-chain identity.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            {
+              icon: Terminal,
+              step: '1',
+              title: 'Install Skill',
+              code: 'cp -r skill/ your-agent/',
+              desc: 'Copy the xrpl-agent-id skill into your Clawdbot agent workspace.',
+            },
+            {
+              icon: Zap,
+              step: '2',
+              title: 'Register',
+              code: 'node skill/scripts/register.js',
+              desc: 'Generates wallet, funds via faucet, publishes DID on-chain.',
+            },
+            {
+              icon: CheckCircle,
+              step: '3',
+              title: 'Verified',
+              code: 'node skill/scripts/verify.js --submit <url>',
+              desc: 'Responds to challenges automatically. Agent is verified.',
+            },
+          ].map((item) => (
+            <div
+              key={item.step}
+              className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden"
+            >
+              <div className="p-5 space-y-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <item.icon className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="font-bold">
+                  <span className="text-blue-600">{item.step}.</span>{' '}
+                  {item.title}
+                </h3>
+                <p className="text-xs text-zinc-500">{item.desc}</p>
+              </div>
+              <div className="px-4 py-2 bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800">
+                <code className="text-xs text-green-400 font-mono">
+                  $ {item.code}
+                </code>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <Link
+            href="/register"
+            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline font-medium"
+          >
+            Full setup guide <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </section>
@@ -60,7 +139,7 @@ export default function HomePage() {
             {
               icon: UserPlus,
               title: '1. Register',
-              desc: 'Create an XRPL account, publish a DID document, and expose a callback endpoint.',
+              desc: 'Create an XRPL account, publish a DID document, and install the Clawdbot skill — or expose a callback endpoint manually.',
             },
             {
               icon: Zap,
@@ -145,6 +224,9 @@ export default function HomePage() {
       {/* CTA */}
       <section className="text-center py-8 space-y-4 border-t border-zinc-200 dark:border-zinc-800">
         <h2 className="text-xl font-bold">Ready to get started?</h2>
+        <p className="text-sm text-zinc-500">
+          Install the Clawdbot skill or register manually — your choice.
+        </p>
         <div className="flex items-center justify-center gap-3">
           <Link
             href="/register"
