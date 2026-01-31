@@ -26,7 +26,7 @@ export async function getAllAgents(): Promise<Agent[]> {
   for (const id of agentIds) {
     const agentData = await kv.get(`agent:${id}`);
     if (agentData) {
-      agents.push(typeof agentData === 'string' ? JSON.parse(agentData) : agentData);
+      agents.push(typeof agentData === 'string' ? JSON.parse(agentData) as Agent : agentData as Agent);
     }
   }
   
@@ -47,7 +47,7 @@ export async function getAgent(idOrAddress: string): Promise<Agent | undefined> 
   
   if (!agentData) return undefined;
   
-  return typeof agentData === 'string' ? JSON.parse(agentData) : agentData;
+  return typeof agentData === 'string' ? JSON.parse(agentData) as Agent : agentData as Agent;
 }
 
 export async function createAgent(agent: Agent): Promise<Agent> {
@@ -70,7 +70,7 @@ export async function updateAgent(
   const existing = await kv.get(`agent:${id}`);
   if (!existing) return undefined;
   
-  const agent = typeof existing === 'string' ? JSON.parse(existing) : existing;
+  const agent = typeof existing === 'string' ? JSON.parse(existing) as Agent : existing as Agent;
   const updated = { 
     ...agent, 
     ...updates, 
@@ -123,7 +123,7 @@ export async function getCredential(id: string): Promise<Credential | undefined>
   const credData = await kv.get(`cred:${id}`);
   if (!credData) return undefined;
   
-  return typeof credData === 'string' ? JSON.parse(credData) : credData;
+  return typeof credData === 'string' ? JSON.parse(credData) as Credential : credData as Credential;
 }
 
 export async function getCredentialsByAgent(agentId: string): Promise<Credential[]> {
@@ -133,7 +133,7 @@ export async function getCredentialsByAgent(agentId: string): Promise<Credential
   for (const credId of credIds) {
     const credData = await kv.get(`cred:${credId}`);
     if (credData) {
-      credentials.push(typeof credData === 'string' ? JSON.parse(credData) : credData);
+      credentials.push(typeof credData === 'string' ? JSON.parse(credData) as Credential : credData as Credential);
     }
   }
   
@@ -166,7 +166,7 @@ export async function updateCredentialStatus(
   const existing = await kv.get(`cred:${id}`);
   if (!existing) return false;
   
-  const credential = typeof existing === 'string' ? JSON.parse(existing) : existing;
+  const credential = typeof existing === 'string' ? JSON.parse(existing) as Credential : existing as Credential;
   credential.status = status;
   
   if (status === 'revoked') {
@@ -191,7 +191,7 @@ export async function getChallenge(id: string): Promise<Challenge | undefined> {
   const challengeData = await kv.get(`challenge:${id}`);
   if (!challengeData) return undefined;
   
-  return typeof challengeData === 'string' ? JSON.parse(challengeData) : challengeData;
+  return typeof challengeData === 'string' ? JSON.parse(challengeData) as Challenge : challengeData as Challenge;
 }
 
 export async function updateChallenge(
@@ -201,7 +201,7 @@ export async function updateChallenge(
   const existing = await kv.get(`challenge:${id}`);
   if (!existing) return false;
   
-  const challenge = typeof existing === 'string' ? JSON.parse(existing) : existing;
+  const challenge = typeof existing === 'string' ? JSON.parse(existing) as Challenge : existing as Challenge;
   const updated = { ...challenge, ...updates };
   
   // Keep the same TTL
@@ -230,7 +230,7 @@ export async function getSessionsByAgent(agentId: string): Promise<VerificationS
   for (const sessionId of sessionIds) {
     const sessionData = await kv.get(`session:${sessionId}`);
     if (sessionData) {
-      sessions.push(typeof sessionData === 'string' ? JSON.parse(sessionData) : sessionData);
+      sessions.push(typeof sessionData === 'string' ? JSON.parse(sessionData) as VerificationSession : sessionData as VerificationSession);
     }
   }
   
@@ -244,7 +244,7 @@ export async function updateSession(
   const existing = await kv.get(`session:${id}`);
   if (!existing) return false;
   
-  const session = typeof existing === 'string' ? JSON.parse(existing) : existing;
+  const session = typeof existing === 'string' ? JSON.parse(existing) as VerificationSession : existing as VerificationSession;
   const updated = { ...session, ...updates };
   
   await kv.set(`session:${id}`, JSON.stringify(updated));
@@ -284,14 +284,14 @@ export async function logEvent(
 export async function getRecentEvents(limit = 50): Promise<MonitoringEvent[]> {
   const eventStrings = await kv.lrange('events:recent', 0, limit - 1);
   return eventStrings.map(eventStr => 
-    typeof eventStr === 'string' ? JSON.parse(eventStr) : eventStr
+    typeof eventStr === 'string' ? JSON.parse(eventStr) as MonitoringEvent : eventStr as MonitoringEvent
   );
 }
 
 export async function getEventsByAgent(agentId: string): Promise<MonitoringEvent[]> {
   const eventStrings = await kv.lrange(`events:agent:${agentId}`, 0, -1);
   return eventStrings.map(eventStr => 
-    typeof eventStr === 'string' ? JSON.parse(eventStr) : eventStr
+    typeof eventStr === 'string' ? JSON.parse(eventStr) as MonitoringEvent : eventStr as MonitoringEvent
   );
 }
 
@@ -320,7 +320,7 @@ export async function getStats() {
   for (const id of agentIds) {
     const agentData = await kv.get(`agent:${id}`);
     if (agentData) {
-      agents.push(typeof agentData === 'string' ? JSON.parse(agentData) : agentData);
+      agents.push(typeof agentData === 'string' ? JSON.parse(agentData) as Agent : agentData as Agent);
     }
   }
   
